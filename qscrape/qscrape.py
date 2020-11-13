@@ -110,7 +110,7 @@ class Q:
 if __name__ == "__main__":
 
 	q = Q()
-	if len(q.corpus <= 1):
+	if len(q.corpus) <= 1:
 		q.scrape(end=50)
 		q.save()
-	q.drop()
+	print(q.drop())
