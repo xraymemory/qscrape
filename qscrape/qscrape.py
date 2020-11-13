@@ -109,8 +109,19 @@ class Q:
 
 if __name__ == "__main__":
 
-	q = Q()
-	if len(q.corpus) <= 1:
-		q.scrape(end=50)
-		q.save()
-	print(q.drop())
+	def run():
+		
+		q = Q()
+
+		if len(q.corpus) <= 1:
+			q.scrape(end=50)
+			q.save()
+		
+		drop = q.drop()
+		if drop is not None:
+			print(drop)
+		else:
+			run()
+	run()
+
+
