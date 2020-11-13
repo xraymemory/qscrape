@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 class Q:
 
-	FILENAME = "./q.txt"
+	FILENAME = "./q.json"
 	CONCURRENT = 200
 
 	def __init__(self, corpus=FILENAME):
@@ -79,6 +79,9 @@ class Q:
 
 	def scrape(self, start=1, end=-1):
 		''' Scrape QAlert site for new Q posts and save to internal JSON '''
+
+		if (start == -1):
+			start = len(self.JSON["posts"])
 
 		if (end == -1):
 			end = self._get_q_max()
