@@ -67,6 +67,11 @@ class Q:
 			''' Some posts are image only - we are concerned with text for now '''
 			traceback.print_tb(e.__traceback__)
 
+	def get(self, post_number):
+		''' Get single Q drop '''
+
+		q = requests.get(self.BASE_POSTS_URL+str(post_number))
+		self._handle_request(q)
 
 	def scrape(self, n=-1):
 		''' Scrape QAlert site for new Q posts and save to internal JSON '''
@@ -83,10 +88,7 @@ class Q:
 		
 		for post in range(post_floor, post_floor+post_range):
 
-			print(post)
-			print(self.BASE_POSTS_URL+str(post))
-			q = requests.get(self.BASE_POSTS_URL+str(post))
-			self._handle_request(q)
+			self.get(post)
 
 	def save(self, output=FILENAME):
 		''' Write Q JSON representation to file '''
