@@ -23,11 +23,12 @@ class Q:
 		self.JSON["posts"] = {}
 		self.corpus = ''
 
-		self.silent = False
+		self.silent = True
 
 		self.MAIN_PAGE_POST_DIV_CLASS = "xtext-accent text-decoration-none font-weight-bold text-custom-green"
 		self.SINGLE_POST_DIV_CLASS = "dont-break-out mb-3 text-accent"
 
+		''' Look for corpus on disk and load it in'''
 		if os.path.isfile(corpus):
 			with open(corpus) as f:
 				self.JSON = json.load(f, object_pairs_hook=OrderedDict)
@@ -67,7 +68,10 @@ class Q:
 			self.JSON["posts"][int(post_number)] = q_entry
 			
 		except Exception as e:
-			''' Some posts are image only - we are concerned with text for now '''
+			''' Some posts are image only - we are concerned with text for now .
+				Since we are getting the post number from scraping and not from
+				any counter, the numbers will still line up.
+			'''
 			traceback.print_tb(e.__traceback__)
 
 
@@ -102,7 +106,15 @@ class Q:
 		if q_input == '': q_input = self.corpus
 
 		model = markovify.Text(q_input)
-		return model.make_sentence()
+		sentence = model.make_sentence()
+ 
+
+ 		''' Markovify occasionally returns weird results which print as blanks
+ 			so if we see those, we just sample again '''
+		if ((sentence is not None) and (sentence != None) and ((sentence is not ' ') and (sentence is not '') and (sentence is not '\n'))):
+			return sentence
+		else:
+			return self.drop()
 
 
 
@@ -110,18 +122,15 @@ class Q:
 if __name__ == "__main__":
 
 	def run():
-		
+
 		q = Q()
 
 		if len(q.corpus) <= 1:
 			q.scrape(end=50)
 			q.save()
 		
-		drop = q.drop()
-		if drop is not None:
-			print(drop)
-		else:
-			run()
+		print(q.drop())
+
 	run()
 
 
