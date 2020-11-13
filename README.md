@@ -20,3 +20,4 @@ While the author of this tool personally believes QAnon is one part shitpost two
 
 # To do
 - GPT-2 
+- Async HTTP requests
