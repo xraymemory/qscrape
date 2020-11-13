@@ -8,7 +8,7 @@ from qscrape import Q
 
 q = Q()
 # Get Q drops 1 through 420
-q.scrape(n=420)
+q.scrape(start=1, end=420)
 # Output to file
 q.save(output="./intel.txt")
 # Markov generation
