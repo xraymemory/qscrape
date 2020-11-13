@@ -31,5 +31,4 @@ The `save` function outputs JSON
 While the author of this tool personally believes QAnon is one part shitpost two parts psyop, one cannot deny the importance of Q's posts as bizarre socio-political artifacts. `qscrape` is developed and maintained for use in digital archaeology and media studies
 
 # To do
-- GPT-2 
 - Async HTTP requests
