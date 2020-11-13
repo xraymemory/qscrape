@@ -1,6 +1,6 @@
 # qscrape
-Python scraper for gathering Q intel and generating your own drops
-
+Python scraper for gathering Q intel and generating your own drops via Markov or GPT-2
+ 
 # Usage
 You can run the scraper via command line ```python3 qscrape.py``` or import and invoke like so
 ```Python
@@ -14,3 +14,7 @@ q.save(output="./intel.txt")
 ```
 # Why?
 While the author of this tool personally believe QAnon is one part shitpost two parts psyop, one cannot deny the importance of Q's posts as bizarre socio-political artifacts. `qscrape` is developed and maintained for use in digital archaeology and media studies
+
+# To do
+- Markov chain
+- GPT-2 
