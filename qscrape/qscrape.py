@@ -48,8 +48,7 @@ class Q:
 			q = resp.body
 		except AttributeError:
 			q =resp.text
-
-		print("we in this bitch")
+			
 		soup = bs(q, features="html.parser")
 
 		try:
@@ -63,6 +62,7 @@ class Q:
 				print(q_entry)
 
 			self.JSON["posts"][int(post_number)] = q_entry
+			
 		except Exception as e:
 			''' Some posts are image only - we are concerned with text for now '''
 			traceback.print_tb(e.__traceback__)
