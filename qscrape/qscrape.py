@@ -4,7 +4,6 @@ import json
 import sys
 import traceback
 
-
 from tornado import ioloop, httpclient
 from bs4 import BeautifulSoup as bs
 from collections import OrderedDict
@@ -101,8 +100,3 @@ if __name__ == "__main__":
 	q = Q()
 	q.scrape()
 	q.save()
-
-
-
-
-
