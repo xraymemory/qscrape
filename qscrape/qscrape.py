@@ -96,7 +96,7 @@ class Q:
 		with open(output, 'w+') as f:
 			json.dump(self.JSON, f)
 
-	def markov(self, q_input=''):
+	def drop(self, q_input=''):
 		''' Generate Q drops from markov chain '''
 
 		if q_input == '': q_input = self.corpus
@@ -110,5 +110,7 @@ class Q:
 if __name__ == "__main__":
 
 	q = Q()
-	q.scrape()
-	q.save()
+	if len(q.corpus <= 1):
+		q.scrape(end=50)
+		q.save()
+	q.drop()
