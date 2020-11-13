@@ -11,10 +11,12 @@ q = Q()
 q.scrape(n=420)
 # Output to file
 q.save(output="./intel.txt")
+# Markov generation
+print(q.markov())
+'To suggest this is the first domino.'
 ```
 # Why?
 While the author of this tool personally believes QAnon is one part shitpost two parts psyop, one cannot deny the importance of Q's posts as bizarre socio-political artifacts. `qscrape` is developed and maintained for use in digital archaeology and media studies
 
 # To do
-- Markov chain
 - GPT-2 

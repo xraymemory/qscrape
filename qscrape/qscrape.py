@@ -3,6 +3,7 @@ import os.path
 import json
 import sys
 import traceback
+import markovify 
 
 from bs4 import BeautifulSoup as bs
 from collections import OrderedDict
@@ -20,6 +21,7 @@ class Q:
 
 		self.JSON = OrderedDict()
 		self.JSON["posts"] = {}
+		self.corpus = ''
 
 		self.silent = False
 
@@ -29,6 +31,8 @@ class Q:
 		if os.path.isfile(corpus):
 			with open(corpus) as f:
 				self.JSON = json.load(f, object_pairs_hook=OrderedDict)
+				for post in self.JSON["posts"]:
+					self.corpus += self.JSON["posts"][str(post)]['text'] + '\n'
 
 	def _get_q_max(self):
 		''' Get ceiling of Q posts '''
@@ -66,26 +70,20 @@ class Q:
 			''' Some posts are image only - we are concerned with text for now '''
 			traceback.print_tb(e.__traceback__)
 
+
 	def get(self, post_number):
 		''' Get single Q drop '''
 
 		q = requests.get(self.BASE_POSTS_URL+str(post_number))
 		self._handle_request(q)
 
-	def scrape(self, n=-1):
+	def scrape(self, start=1, end=-1):
 		''' Scrape QAlert site for new Q posts and save to internal JSON '''
 
-		if (n == -1):
-			n = self._get_q_max()
-
-		post_floor = len(self.JSON["posts"])
-
-		if (post_floor == 0):
-			post_floor = 1
-
-		post_range = abs(post_floor - n)
+		if (end == -1):
+			end = self._get_q_max()
 		
-		for post in range(post_floor, post_floor+post_range):
+		for post in range(start, end):
 
 			self.get(post)
 
@@ -94,6 +92,16 @@ class Q:
 
 		with open(output, 'w+') as f:
 			json.dump(self.JSON, f)
+
+	def markov(self, q_input=''):
+		''' Generate Q drops from markov chain '''
+
+		if q_input == '': q_input = self.corpus
+
+		model = markovify.Text(q_input)
+		return model.make_sentence()
+
+
 
 
 if __name__ == "__main__":
