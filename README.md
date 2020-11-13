@@ -1,5 +1,5 @@
 # qscrape
-Python scraper for gathering Q intel and generating your own drops via Markov or GPT-2
+Python scraper for gathering Q intel and generating your own drops
  
 # Usage
 You can run the scraper via command line ```python3 qscrape.py``` or import and invoke like so
