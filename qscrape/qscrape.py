@@ -111,7 +111,6 @@ class Q:
 
         ''' Markovify occasionally returns weird results which print as blanks
         so if we see those, we just sample again '''
-
         if ((sentence is not None) and (sentence != None) and ((sentence is not ' ') and (sentence is not '') and (sentence is not '\n'))):
             return sentence
         else:
