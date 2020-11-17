@@ -137,13 +137,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('cmd', help='Allowed commands: "scrape" or "drop"', default="drop")
-    parser.add_argument('--posts', help='Number of posts to scrape', nargs=1, type=int, default=50)
+    parser.add_argument('cmd', help='Allowed commands: "scrape" or "drop"', default="drop")    
+    parser.add_argument('--posts', help='Number of posts to scrape', type=int, default=50)
 
+    args = parser.parse_args()
 
     def run():
-
-        args = parser.parse_args()
 
         q = Q()
         q.silent = False
