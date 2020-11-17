@@ -4,16 +4,18 @@ import json
 import sys
 import traceback
 import markovify 
+import argparse
 
 from bs4 import BeautifulSoup as bs
 from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 class Q:
 
     FILENAME = "./q.json"
-    CONCURRENT = 200
 
-    def __init__(self, corpus=FILENAME):
+    def __init__(self):
         ''' Set up defaults, checks if file already exists and loads it in '''
 
         self.BASE_URL = "https://qalerts.app"
@@ -25,22 +27,31 @@ class Q:
 
         self.silent = True
 
+        self.WORKERS = 69
+
         self.MAIN_PAGE_POST_DIV_CLASS = "xtext-accent text-decoration-none font-weight-bold text-custom-green"
         self.SINGLE_POST_DIV_CLASS = "dont-break-out mb-3 text-accent"
 
         ''' Look for corpus on disk and load it in'''
-        if os.path.isfile(corpus):
-            with open(corpus) as f:
+        self._update_corpus()
+ 
+
+    def _update_corpus(self, corpus_file=FILENAME):
+
+        if os.path.isfile(corpus_file):
+            with open(corpus_file) as f:
                 self.JSON = json.load(f, object_pairs_hook=OrderedDict)
-                for post in self.JSON["posts"]:
-                    self.corpus += self.JSON["posts"][str(post)]['text'] + '\n'
+
+        for post in self.JSON["posts"]:
+            self.corpus += self.JSON["posts"][str(post)]['text'] + '\n'   
 
     def _get_q_max(self):
         ''' Get ceiling of Q posts '''
 
         q = requests.get(self.BASE_URL)
         soup = bs(q.text, features="html.parser")
-        max_posts = soup.find_all("a", {"class": self.MAIN_PAGE_POST_DIV_CLASS})
+        print(soup)
+        max_posts = soup.find_all("a", {"title": 'Sequential Post Number'})
 
         return int(max_posts[0].text)
 
@@ -51,7 +62,8 @@ class Q:
         try:
             q = resp.body
         except AttributeError:
-            q =resp.text
+            q = resp.text
+
             
         soup = bs(q, features="html.parser")
 
@@ -72,6 +84,7 @@ class Q:
                 Since we are getting the post number from scraping and not from
                 any counter, the numbers will still line up.
             '''
+            print("error?")
             traceback.print_tb(e.__traceback__)
 
 
@@ -79,6 +92,8 @@ class Q:
         ''' Get single Q drop '''
 
         q = requests.get(self.BASE_POSTS_URL+str(post_number))
+
+        print(q)
         self._handle_request(q)
 
     def scrape(self, start=1, end=-1):
@@ -90,9 +105,10 @@ class Q:
         if (end == -1):
             end = self._get_q_max()
         
-        for post in range(start, end):
-
-            self.get(post)
+        threads = []
+        with ThreadPoolExecutor(max_workers=self.WORKERS) as executor:
+            for post in range(start, end):
+                threads.append(executor.submit(self.get, post))
 
     def save(self, output=FILENAME):
         ''' Write Q JSON representation to file '''
@@ -100,15 +116,17 @@ class Q:
         with open(output, 'w+') as f:
             json.dump(self.JSON, f)
 
+        self._update_corpus()
+
     def drop(self, q_input=''):
         ''' Generate Q drops from markov chain '''
 
-        if q_input == '': q_input = self.corpus
+        if (q_input == ''):
+            q_input = self.corpus
 
         model = markovify.Text(q_input)
         sentence = model.make_sentence()
  
-
         ''' Markovify occasionally returns weird results which print as blanks
         so if we see those, we just sample again '''
         if ((sentence is not None) and (sentence != None) and ((sentence is not ' ') and (sentence is not '') and (sentence is not '\n'))):
@@ -117,20 +135,28 @@ class Q:
             return self.drop()
 
 
-
-
 if __name__ == "__main__":
 
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--posts', help='Number of posts to scrape', nargs=1, type=int, default=50)
+    parser.add_argument('--noscrape', help='Disables scraping', default=False)
+
+    args = parser.parse_args()
+
+
     def run():
+        ''' Demo '''
 
         q = Q()
-
-        if len(q.corpus) <= 1:
-            q.scrape(end=50)
+        q.silent = False
+        if ((len(q.corpus)) <= 1 and (not args.noscrape)):
+            q.scrape(end=args.posts)
             q.save()
-        
         print(q.drop())
 
     run()
+
 
 
