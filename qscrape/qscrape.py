@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class Q:
 
-    FILENAME = "./q.json"
+    FILENAME =  os.path.dirname(__file__) + "/q.json"
 
     def __init__(self):
         ''' Set up defaults, checks if file already exists and loads it in '''
