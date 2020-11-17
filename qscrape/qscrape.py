@@ -138,7 +138,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--posts', help='Number of posts to scrape', nargs=1, type=int, default=50)
-    parser.add_argument('--noscrape', help='Disables scraping', default=False)
 
     args = parser.parse_args()
 
@@ -148,7 +147,7 @@ if __name__ == "__main__":
 
         q = Q()
         q.silent = False
-        if ((len(q.corpus)) <= 1 and (not args.noscrape)):
+        if (len(q.corpus) <= 1):
             q.scrape(end=args.posts)
             q.save()
         print(q.drop())
