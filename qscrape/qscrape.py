@@ -50,7 +50,7 @@ class Q:
 
         q = requests.get(self.BASE_URL)
         soup = bs(q.text, features="html.parser")
-        print(soup)
+
         max_posts = soup.find_all("a", {"title": 'Sequential Post Number'})
 
         return int(max_posts[0].text)
@@ -84,7 +84,6 @@ class Q:
                 Since we are getting the post number from scraping and not from
                 any counter, the numbers will still line up.
             '''
-            print("error?")
             traceback.print_tb(e.__traceback__)
 
 
@@ -92,8 +91,6 @@ class Q:
         ''' Get single Q drop '''
 
         q = requests.get(self.BASE_POSTS_URL+str(post_number))
-
-        print(q)
         self._handle_request(q)
 
     def scrape(self, start=1, end=-1):
