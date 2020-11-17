@@ -9,10 +9,10 @@ from qscrape import Q
 q = Q()
 # Get Q drops 1 through 420
 q.scrape(start=1, end=420)
-# Output to file
-q.save(output="./intel.txt")
+# Output to file './q.json'
+q.save()
 # Markov generation
-print(q.markov())
+print(q.drop())
 'To suggest this is the first domino.'
 ```
 
